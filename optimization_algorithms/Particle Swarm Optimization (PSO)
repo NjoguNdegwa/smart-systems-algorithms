@@ -1,0 +1,45 @@
+# optimization_algorithms/particle_swarm.py
+
+import random
+
+def objective(x):
+    return x**2 + 3*x + 5  # Min at some point
+
+class Particle:
+    def __init__(self, bounds):
+        self.position = random.uniform(*bounds)
+        self.velocity = 0
+        self.best_position = self.position
+        self.best_value = objective(self.position)
+
+def particle_swarm(bounds=(-10, 10), num_particles=30, iterations=100):
+    swarm = [Particle(bounds) for _ in range(num_particles)]
+    global_best_position = swarm[0].position
+    global_best_value = swarm[0].best_value
+    
+    w = 0.5  # inertia
+    c1 = 1   # cognitive
+    c2 = 2   # social
+    
+    for _ in range(iterations):
+        for p in swarm:
+            value = objective(p.position)
+            if value < p.best_value:
+                p.best_value = value
+                p.best_position = p.position
+            if value < global_best_value:
+                global_best_value = value
+                global_best_position = p.position
+            
+            # Update velocity and position
+            inertia = w * p.velocity
+            cognitive = c1 * random.random() * (p.best_position - p.position)
+            social = c2 * random.random() * (global_best_position - p.position)
+            p.velocity = inertia + cognitive + social
+            p.position += p.velocity
+    
+    return global_best_position, global_best_value
+
+if __name__ == "__main__":
+    pos, val = particle_swarm()
+    print(f"PSO found minimum at x = {pos:.4f} with value = {val:.4f}")
