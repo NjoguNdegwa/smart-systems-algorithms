@@ -1,0 +1,18 @@
+# optimization_algorithms/gradient_descent.py
+
+def objective(x):
+    return x**4 - 3*x**3 + 2
+
+def gradient(x):
+    return 4*x**3 - 9*x**2
+
+def gradient_descent(start_x=0, learning_rate=0.01, iterations=1000):
+    x = start_x
+    for _ in range(iterations):
+        grad = gradient(x)
+        x = x - learning_rate * grad
+    return x, objective(x)
+
+if __name__ == "__main__":
+    x_min, val_min = gradient_descent()
+    print(f"Gradient Descent minimum at x = {x_min:.4f} with value = {val_min:.4f}")
