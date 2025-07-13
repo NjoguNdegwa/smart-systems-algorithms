@@ -1,0 +1,29 @@
+# optimization_algorithms/simulated_annealing.py
+
+import math
+import random
+
+def objective(x):
+    return x**2 - 4*x + 4  # Minimum at x=2
+
+def simulated_annealing(start_x=0, max_iter=1000, initial_temp=100, cooling_rate=0.95):
+    current_x = start_x
+    current_energy = objective(current_x)
+    temperature = initial_temp
+    
+    for i in range(max_iter):
+        new_x = current_x + random.uniform(-1, 1)
+        new_energy = objective(new_x)
+        
+        if new_energy < current_energy or math.exp((current_energy - new_energy) / temperature) > random.random():
+            current_x, current_energy = new_x, new_energy
+        
+        temperature *= cooling_rate
+        if temperature < 1e-3:
+            break
+    
+    return current_x, current_energy
+
+if __name__ == "__main__":
+    x, energy = simulated_annealing()
+    print(f"Minimum at x = {x:.4f} with objective = {energy:.4f}")
